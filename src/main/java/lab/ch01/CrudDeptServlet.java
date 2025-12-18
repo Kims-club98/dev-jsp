@@ -29,6 +29,7 @@ public class CrudDeptServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doDelete");
+		resp.sendRedirect("detp/detpDeleteOk.jsp");
 	}//end of doDelete
 	//조회,상세조회 - 주문조회, 로그인
 	/****************************************************************
@@ -58,6 +59,14 @@ public class CrudDeptServlet extends HttpServlet {
 		// 요청이 유지되는 동안에는 이 주소번지로 공유가 가능함!(if 공유가 안된다면 NullPointerException 오류 발생 -> runtime에러)
 		req.setAttribute("list", list);
 		// jsp 호출하기 - forward 로 해야 함(Because servlet과 jsp가 요청이 계속 유지되고 있다고 생각)
+		// 공유가 안되면 NullPointException -> 500 -> Runtime 에러 발생.
+		// setAttribute의 소유주는 요청 객체이다.
+		// setAttribute의 파라미터는 2개지이다.
+		
+		// jsp 페이지 호출하기 - forward로 해야 함
+		// Because servlet과 jsp가 요청이 계속 유지되고 있다 라고 생각하기 때문
+		// ==> 유지가 되지 않는다.
+		// 기존 요청 URL이 그대로인데 실제 화면은 /dept/deptList.jsp가 출력된다.
 		// * 비상태 프로토콜: 요청 URL이 바뀌면 기존 요청이 끊어지고 새로운 요청이 발생(유지 不可)
 		//☆★☆★☆★ 암기 - Select 이면 forward ☆★☆★☆★
 		RequestDispatcher view = req.getRequestDispatcher("/dept/deptList.jsp"); // 404번이 뜨면 =61번 확인(링크연결이 오류인 것)
@@ -101,6 +110,7 @@ public class CrudDeptServlet extends HttpServlet {
 		//1.입력-청취 -> req.getParameter("dname");
 		//1.입력-청취 -> req.getParameter("loc");
 		//1.입력-청취 -> req.getParameter("deptno");
+		resp.sendRedirect("detp/detpUpdateOk.jsp");
 		
 	}
 
