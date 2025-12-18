@@ -15,10 +15,12 @@ public class MyBatisCommonFactory {
 	public MyBatisCommonFactory() {
 		init(); // 초기화 메서드 호출
 	}
+	
 	public void init() {
 		try {
+			// 물리적으로 떨어져 있는 오라클 서버의 드라이버 클래스, URL, scott, tiger
 			String resource = "com/mybatis/MapperConfig.xml";
-			/* String resource = "com/mybatis/Configuration.xml"; */
+			// 리소스 IO를 통해서 스캔
 			Reader reader = Resources.getResourceAsReader(resource);
 			logger.info("before sqlSessionFactory:"+sqlSessionFactory);
 			if(sqlSessionFactory==null) {
@@ -30,12 +32,13 @@ public class MyBatisCommonFactory {
 			ffe.getMessage();
 		} catch(Exception e) {
 			e.getMessage();
-		}
+		}// end of try..catch..catch
 	} // end of init
-	/* */
-	public SqlSessionFactory getSqlSessionFactory() {
-		init();
-		return sqlSessionFactory; // 전역변수 -> 최초는 Null로 되어 있음.
-	}// end of getSqlSessionFactory
+	
+	public static void main(String args[]) {
+		MyBatisCommonFactory mcf = new MyBatisCommonFactory();
+		System.out.println(mcf.sqlSessionFactory);
+		
+	}// end of main
 	
 }
