@@ -1,4 +1,4 @@
-package com.example.demo.abase64;
+package lab.ch01;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;

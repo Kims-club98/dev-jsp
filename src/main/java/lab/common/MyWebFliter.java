@@ -1,8 +1,10 @@
 package lab.common;
 
+
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+
 
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
@@ -23,7 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
  * */
 @WebFilter(urlPatterns="/*")//모든 요청에 대해 MYWebFilter적용할거야
 public class MyWebFliter implements Filter {
-	Logger log = Logger.getLogger(MyWebFilter.class);
+	Logger log = Logger.getLogger(MyWebFliter.class);
 
 	
 	@Override
