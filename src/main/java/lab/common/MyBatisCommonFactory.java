@@ -1,4 +1,4 @@
-package lab.ch01;
+package lab.common;
 
 import java.io.FileNotFoundException;
 import java.io.Reader;
@@ -9,36 +9,31 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.log4j.Logger;
 
 public class MyBatisCommonFactory {
-	static Logger logger = Logger.getLogger(MyBatisCommonFactory.class);
-	public static SqlSessionFactory sqlSessionFactory = null;
-	// 생성자
+	Logger logger = Logger.getLogger(MyBatisCommonFactory.class);
+	public SqlSessionFactory sqlSessionFactory = null;
+	//생성자
 	public MyBatisCommonFactory() {
-		init(); // 초기화 메서드 호출
+		init();//초기화 메서드 호출
 	}
-	
 	public void init() {
 		try {
-			// 물리적으로 떨어져 있는 오라클 서버의 드라이버 클래스, URL, scott, tiger
-			String resource = "com/mybatis/MapperConfig.xml";
-			// 리소스 IO를 통해서 스캔
+			//물리적으로 떨어져 있는 오라클 서버의 드라이버 클래스, URL, scott, tiger
+			String resource = "mybatis/MapperConfig.xml";
+			//리소스를 IO를 통해서 스캔
 			Reader reader = Resources.getResourceAsReader(resource);
-			logger.info("before sqlSessionFactory:"+sqlSessionFactory);
 			if(sqlSessionFactory==null) {
-			logger.info("if sqlSessionFactory:"+sqlSessionFactory);
-			sqlSessionFactory = 
+				logger.info("if sqlSessionFactory:"+sqlSessionFactory);
+				sqlSessionFactory = 
 						new SqlSessionFactoryBuilder().build(reader, "development");
-			}// end of if
+			}//end of if
 		} catch (FileNotFoundException ffe) {
 			ffe.getMessage();
 		} catch(Exception e) {
 			e.getMessage();
-		}// end of try..catch..catch
-	} // end of init
-	
+		}///////////// try..catch
+	}//end of init
 	public static void main(String args[]) {
 		MyBatisCommonFactory mcf = new MyBatisCommonFactory();
 		System.out.println(mcf.sqlSessionFactory);
-		
-	}// end of main
-	
+	}//end of main
 }

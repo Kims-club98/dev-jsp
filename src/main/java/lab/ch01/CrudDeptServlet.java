@@ -29,7 +29,7 @@ public class CrudDeptServlet extends HttpServlet {
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doDelete");
-		resp.sendRedirect("detp/detpDeleteOk.jsp");
+		resp.sendRedirect("/dept/deptDeleteOk.jsp");
 	}//end of doDelete
 	//조회,상세조회 - 주문조회, 로그인
 	/****************************************************************
@@ -39,38 +39,36 @@ public class CrudDeptServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doGet");
-		// insert here - 조회결과를 쥐고 있음
-		List<Map<String, Object>> list = new ArrayList<>();
+		//insert here - 조회결과 쥐고 있다.
+		List<Map<String,Object>> list = new ArrayList<>();
 		Map<String, Object> map = new HashMap<>();
 		map.put("deptno",10);
 		map.put("dname","총무부");
 		map.put("loc","서울");
 		list.add(map);
-		map=new HashMap<>();
+		map = new HashMap<>();
 		map.put("deptno",20);
 		map.put("dname","개발부");
 		map.put("loc","부산");
 		list.add(map);
-		map=new HashMap<>();
+		map = new HashMap<>();
 		map.put("deptno",30);
 		map.put("dname","운영부");
 		map.put("loc","제주");
-		list.add(map);
-		// 요청이 유지되는 동안에는 이 주소번지로 공유가 가능함!(if 공유가 안된다면 NullPointerException 오류 발생 -> runtime에러)
+		list.add(map);			
+		//요청이 유지도는 동안에는 이 주소번지로 공유가능함.
+		//공유가 안되면 NullPointerException -> 500 -> Runtime에러
+		//setAttribute의 소유주는 요청객체이다.
+		//setAttribute의 파라미터는 두 가지이다.
 		req.setAttribute("list", list);
-		// jsp 호출하기 - forward 로 해야 함(Because servlet과 jsp가 요청이 계속 유지되고 있다고 생각)
-		// 공유가 안되면 NullPointException -> 500 -> Runtime 에러 발생.
-		// setAttribute의 소유주는 요청 객체이다.
-		// setAttribute의 파라미터는 2개지이다.
+		//jsp페이지 호출하기 -forward로 해야 한다.
+		//왜냐하면 servlet과 jsp가 요청이 계속 유지되고 있다 라고 생각
+		//비상태 프로토콜이란 요청 URL이 바뀌면 기존에 요청이 끊어지고 새로운요청이 발생함.
+		//유지가 안됨
+		//기존의 요청 URL이 그대로 인데 실제 화면은 /dept/deptList.jsp가 출력됨
+		RequestDispatcher view = req.getRequestDispatcher("/dept/deptList.jsp");
+		view.forward(req, resp);		
 		
-		// jsp 페이지 호출하기 - forward로 해야 함
-		// Because servlet과 jsp가 요청이 계속 유지되고 있다 라고 생각하기 때문
-		// ==> 유지가 되지 않는다.
-		// 기존 요청 URL이 그대로인데 실제 화면은 /dept/deptList.jsp가 출력된다.
-		// * 비상태 프로토콜: 요청 URL이 바뀌면 기존 요청이 끊어지고 새로운 요청이 발생(유지 不可)
-		//☆★☆★☆★ 암기 - Select 이면 forward ☆★☆★☆★
-		RequestDispatcher view = req.getRequestDispatcher("/dept/deptList.jsp"); // 404번이 뜨면 =61번 확인(링크연결이 오류인 것)
-		view.forward(req, resp);
 		
 	}//end of doGet
 	//입력, 저장, 파일업로드, 조회인데 보안상 값이 노출되지 않도록 할 때
@@ -80,7 +78,9 @@ public class CrudDeptServlet extends HttpServlet {
 	 *  @param 사용자가 선택한 부서번호 - deptno
 	 *  @param 사용자가 입력한 부서명 - dname
 	 *  @param 사용자가 입력한 지역명 - loc
-	 *  주의사항 > 브라우저의 URL을 통해서 Post방식을 테스트 할 수 없다(IF 요청을 해보면 조회가 된다. But 원하는 결과가 아님 -> 입력)
+	 *  @return int 1이면 입력 성공 0이면 입력 실패
+	 *  주의 : 브라우저의 URL을 통해서는 POST방식을 테스트할 수 없다.
+	 *  만일 요청을 해보면 조회가 된다. - 원하는게 아니다.-> 입력
 	 *  반드시 postman, swagger, javascript
 	 ****************************************************************/	
 	@Override
@@ -97,12 +97,13 @@ public class CrudDeptServlet extends HttpServlet {
 	 *  @param 사용자가 입력한 부서명 - dname
 	 *  @param 사용자가 입력한 지역명 - loc
 	 *  @param 사용자가 선택한 부서번호 - deptno
-	 *  @return int 1 이면 수정 성공 & 0이면 수정 실패
-	 *  Q. doput 메서드 리턴타입은 void 1 -> 1 또는 0을 어떻게 jsp페이지를 전달 가능한가?
-	 *  	1) query String을 이용한다.
-	 *  	2) request scope를 이용한다.
-	 *  	jsp 페이지에 1또는 0을 넘겨야 하는가?
-	 *  => 1이면 Client에게 수정을 성공했습니다. or 0이면 실패했습니다. ==> 후처리 必要
+	 *  @return int 1이면 수정 성공 0이면 수정 실패
+	 *  질문 : doPut메서드의 리턴 타입이 void인데 1 또는 0을 어떻게 jsp페이지에 
+	 *  전달할 수 있나요?
+	 *  1)query string을 이용한다.
+	 *  2)request scope를 이용한다.
+	 *  왜 jsp페이지에 1또는 0을 넘겨야 하나요?
+	 *  1이면 사용자에게 수정이 성공하였습니다. 또는 0일 땐 실패하였습니다. 후처리
 	 ****************************************************************/
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -110,8 +111,7 @@ public class CrudDeptServlet extends HttpServlet {
 		//1.입력-청취 -> req.getParameter("dname");
 		//1.입력-청취 -> req.getParameter("loc");
 		//1.입력-청취 -> req.getParameter("deptno");
-		resp.sendRedirect("detp/detpUpdateOk.jsp");
-		
+		resp.sendRedirect("/dept/deptUpdateOk.jsp");
 	}
 
 }
