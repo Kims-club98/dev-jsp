@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import jakarta.servlet.ServletException;
@@ -19,6 +20,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/dept")
 public class DeptController extends HttpServlet {
 	Logger log = Logger.getLogger(DeptController.class);
+	ObjectMapper mapper = new ObjectMapper();
 	CrudDeptDao deptDao = new CrudDeptDao();
 	//부서 정보 삭제하기
 	//delete from dept where deptno = ?
@@ -53,20 +55,31 @@ public class DeptController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doPost");
-		String deptno = req.getParameter("deptno");
-		String dname = req.getParameter("dname");
-		String loc = req.getParameter("loc");
-		log.info(deptno + ", " + dname + ", " + loc);
+		// 요청 본문이 JSON 포맷일 때 입력값 요청하기
+		Map<String, Object> map = 
+				mapper.readValue(req.getInputStream(), Map.class);
+		log.info(map.get("deptno")+", "+map.get("dname")+", "+map.get("loc"));
+		int result =-1;
+		
+		result = deptDao.deptInsert(map);
+		resp.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = resp.getWriter();
+		// 서블릿에서 오라클 연동하기까지 처리 - myBatis외부 라이브러리 사용 O
+		out.print(result); // 등록 성공 시: 1출력, 실패면:0 출력
 	}
-	//부서 정보 수정하기
+	//부서 정보 수정하기(doput)
 	//update dept set dname = ?, loc = ? where deptno = ?
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doPut");
-		String deptno = req.getParameter("deptno");
-		String dname = req.getParameter("dname");
-		String loc = req.getParameter("loc");
-		log.info(deptno + ", " + dname + ", " + loc);		
-	}
+		Map<String, Object> map =
+					mapper.readValue(req.getInputStream(), Map.class);
+		log.info(map.get("deptno") + ", " +map.get("dname") + ", " +map.get("loc"));	
+		int result = deptDao.deptUpdate(map);
+		resp.setContentType("applcation/json;charest=UTF-8");
+		PrintWriter out = resp.getWriter();
+		out.print(result); // 출: 1 & 0 
+		out.flush()
+;	}
 
 }

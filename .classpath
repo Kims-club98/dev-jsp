@@ -5,7 +5,7 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="src/main/java"/>
+	<classpathentry excluding="lab/ch01/HelloServlet.java" kind="src" path="src/main/java"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/mybatis-3.4.6.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/ojdbc6.jar"/>
@@ -14,5 +14,8 @@
 	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/gson-2.8.5.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jackson-core-2.19.4.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jackson-databind-2.19.4.jar"/>
+	<classpathentry kind="lib" path="src/main/webapp/WEB-INF/lib/jackson-annotations-2.19.4.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
