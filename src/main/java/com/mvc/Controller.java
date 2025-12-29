@@ -12,4 +12,16 @@ public interface Controller {
 						   HttpServletResponse res, String viewName)
 	throws Exception;
 	ModelAndView execute(HttpServletRequest req, HttpServletResponse res) throws Exception;
+//------------------
+	public Object deptInsert(HttpServletRequest req, HttpServletResponse res)
+			throws Exception;
+	public Object deptUpdate(HttpServletRequest req, HttpServletResponse res)
+			throws Exception;
+	public Object deptDelete(HttpServletRequest req, HttpServletResponse res)
+			throws Exception;
+	public Object deptDtail(HttpServletRequest req, HttpServletResponse res)
+			throws Exception;
+	public Object deptList(HttpServletRequest req, HttpServletResponse res)
+			throws Exception;
+
 }
