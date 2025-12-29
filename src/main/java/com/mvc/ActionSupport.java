@@ -42,7 +42,20 @@ public class ActionSupport extends HttpServlet {
 	
 	log.info("ActionSupport service");
 	String requestURI = req.getRequestURI();
+	log.info(requestURI); // -> dept/deptInsert.ks
 	String contextPath = req.getContextPath(); // -> / or /dev-jsp
 	log.info(contextPath); // -> / -> server.xml
+	// URL 요청을 활용하여 업무이름과 메서드 이름을 알아낸다.
+	// dept앞에 "/" 제거함 -> "/"기준으로 문자열을 잘라서 배열에 담기
+	String command = requestURI.substring(contextPath.length()+1);
+	int end = command.lastIndexOf(".");
+	// -> dept/deptInsert.ks
+	log.info("end : "+end); //15
+	command = command.substring(0,end);
+	log.info(command); // -> dept/deptInsert
+	String [] path = command.split("/");
+	for(String s:path) {
+		log.info(s);
+		}
 	}
 }
