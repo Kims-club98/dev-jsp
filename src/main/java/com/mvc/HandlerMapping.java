@@ -17,9 +17,9 @@ public class HandlerMapping {
 	 *               , member/memberUpdate,,,
 	 * @param res 
 	 * @param req 
-	 * @return String && ModeAndView
+	 * @return String 이거나 ModelAndView
 	 **********************************************************/
-	public static Controller getController(String command, HttpServletRequest req, HttpServletResponse res) 
+	public static Object getController(String command, HttpServletRequest req, HttpServletResponse res) 
 	throws ServletException, IOException
 	{
 		Object controller = null;
@@ -30,79 +30,57 @@ public class HandlerMapping {
 		if(commands.length == 2) {
 			String work = commands[0];
 			String methodName = commands[1];
-			// 예외처리
 			try {
-				
-			}catch(Exception e) {
-				log.error("메서드 호출 중 오류 발생! > "+e.getMessage());
-				throw new ServletException("컨트롤러 메서드 호출 실패",e);
-			}// end of 예외처리
-
-			//부서관리인가?
-			//개발자가 직접 코드로 인스턴스화를 하였다. 
-			//- 객체관리 책임이 개발자에게 있다.: 의존성 주입이 아니다
-			if("dept".equals(work)) {
-				controller = new DeptController();
-				if("deptInsert".equals(methodName)) {
-					log.info("deptInsert-부서등록");
-					//사용자가 입력한 값을 전달 하기 위해서 req, res가 필요함
-					obj = invokMethod(controller,methodName,req,res);
-				}
-				else if("deptUpdate".equals(methodName)) {
+				//부서관리인가?
+				//개발자가 직접 코드로 인스턴스화를 하였다. 
+				//- 객체관리 책임이 개발자에게 있다.: 의존성 주입이 아니다
+				if("dept".equals(work)) {
 					controller = new DeptController();
-					obj = invokMethod(controller,methodName,req,res);
-					log.info("deptUpdate-부서수정");
+					obj = invokeMethod(controller, methodName, req, res);
 				}
-				else if("deptDelete".equals(methodName)) {
-					controller = new DeptController();
-					obj = invokMethod(controller,methodName,req,res);
-					log.info("deptDelete-부서삭제");
+				//사원관리인가?
+				else if("emp".equals(work)) {
+					controller = new EmpController();
+					obj = invokeMethod(controller, methodName, req, res);
 				}
-				else if("deptDetail".equals(methodName)) {
-					controller = new DeptController();
-					obj = invokMethod(controller,methodName,req,res);
-					log.info("deptDetail-부서정보 한 건 조회");
-				}
-				else if("deptList".equals(methodName)) {
-					controller = new DeptController();
-					obj = invokMethod(controller,methodName,req,res);
-					log.info("deptList-부서목록 n건 조회");
+				//회원관리인가?
+				else if("member".equals(work)) {
+					controller = new MemberController();
+					obj = invokeMethod(controller, methodName, req, res);
 				}				
+			}catch(Exception e) {
+				log.error("메서드 호출 중 오류 발생 : " + e.getMessage());
+				throw new ServletException("컨트롤러 메서드 호출 실패",e);
 			}
-			//사원관리인가?
-			else if("emp".equals(work)) {
-				controller = new EmpController();
-			}
-			//회원관리인가?
-			else if("member".equals(work)) {
-				controller = new MemberController();
-			}
-		}
-		return controller;
-	}// end of getController
-	/********************************************************
-	 * Controller객체 안에 있는 methodName을 문자열로 찾아서 실행하는 메서드 구현(Reflection API를 구현)
-	 * Reflection을 사용하여 동적으로 메서드를 호출한다.
-	 * @param controller 실행 대상( ex. new DeptController())
-	 * @param methodName 실행할 메서드 이름(예: deptInsert, deptList,,)
-	 * @param request - 사용자가 보낸 요청 정보(parameter/section)
-	 * @param response - 서버가 응답할 때 사용하는 객체(출력/Redirect 등)
-	 * @return 각 메서드 실행 결과
-	 *******************************************************/
 
-	private static Object invokMethod(Object controller, String methodName,
-			HttpServletRequest req, HttpServletResponse res) throws Exception
+		}
+		return obj;
+	}//end of getController
+	/*********************************************************************
+	 * Controller객체 안에 있는 methodName을 문자열로 찾아서 실행하는 메서드 구현(리플렉션API)
+	 * 리플렉션을 사용하여 동적으로 메서드를 호출합니다.
+	 * @param controller실행 대상(예: new DeptController())
+	 * @param methodName 실행할 메서드 이름(예: deptInsert, deptList,,)
+	 * @param request - 사용자가 보낸 요청 정보(파라미터/세션 등)
+	 * @param response - 서버가 응답할 때 사용하는 객체(출력/리다이렉트 등)
+	 * @return 각 메서드 실행 결과
+	 ********************************************************************/
+	private static Object invokeMethod(Object controller, String methodName
+			,HttpServletRequest req, HttpServletResponse res) throws Exception
 	{
-		log.info(methodName + "메서드호출");
-/* ★ 메서드 찾기 단계
- * controller.getClass() : 컨트롤러 설계도(Class) 를 얻기
+		log.info(methodName + "메서드 호출");
+/* 메서드 찾기 단계
+ * controller.getClass(): 컨트롤러의 설계도(Class)를 얻기
  * getMethod(...): public 메서드 중에서 이름이 methodName이고
- * 파라미터가 HttpServletRequest, HttpServletResponse인 메서드를 찾아 Method객체로 가져옴
- * 
- * */
-		Method method = controller.getClass().getMethod(methodName, HttpServletRequest.class,
-				HttpServletResponse.class);
+ * 파라미터가 HttpServletRequest, HttpServletResponse인 
+ * 메서드를 찾아서 Method객체로 가져온다.		
+ */
+		Method method =controller.getClass().getMethod(methodName
+				, HttpServletRequest.class, HttpServletResponse.class);
+		log.info(method);
+		//메서드 호출
 		return method.invoke(controller, req, res);
-	}// end of invokMethod
+	}//end of invokeMethod
+	
 	
 }
