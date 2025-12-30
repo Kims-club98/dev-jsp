@@ -1,4 +1,3 @@
-// 부서관리를 담당하는 Controller
 package com.mvc;
 
 import org.apache.log4j.Logger;
@@ -6,15 +5,13 @@ import org.apache.log4j.Logger;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class EmpController implements Controller {
+public class EmpController implements Controller{
 	Logger log = Logger.getLogger(EmpController.class);
-	
 	public EmpController() {
-		log.info("EmpController 디폴트 생성자 호출");
+		log.info("EmpController 디폴트생성자 호출");
 	}
-
 	@Override
-	public ModelAndView excute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+	public ModelAndView execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -24,11 +21,29 @@ public class EmpController implements Controller {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 	@Override
-	public ModelAndView execute(HttpServletRequest req, HttpServletResponse res) throws Exception {
+	public Object deptInsert(HttpServletRequest req, HttpServletResponse res){
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	@Override
+	public Object deptUpdate(HttpServletRequest req, HttpServletResponse res){
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Object deptDelete(HttpServletRequest req, HttpServletResponse res){
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Object deptDetail(HttpServletRequest req, HttpServletResponse res){
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Object deptList(HttpServletRequest req, HttpServletResponse res){
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

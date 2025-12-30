@@ -26,16 +26,19 @@ public class DeptController extends HttpServlet {
 	//delete from dept where deptno = ?
 	@Override
 	protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		log.info("doDelete");// -> http://localhost:8000/dept?deptno=50 // 쿼리스트링
+		log.info("doDelete");
+		//-> http://localhost:8000/dept?deptno=50 //쿼리스트링
 		String deptno = req.getParameter("deptno");
+		log.info(deptno);		
 		int i_deptno = Integer.parseInt(deptno);
-		int result = -1; //Front-End로 전달해서 후처리하기
-		result=deptDao.deptDelete(i_deptno);// DB관리 => deptDao 역할
-		resp.setContentType("application/json;charest=UTF-8");
-		//resp.setContentType("text/plain;charest=UTF-8");
+		//1이면 삭제 성공, 0이면 삭제 실패
+		int result = -1;//Front-End로 전달해서 후처리하기
+		result = deptDao.deptDelete(i_deptno);
+		resp.setContentType("application/json;charset=utf-8");
+		//resp.setContentType("text/plain;charset=utf-8");
 		PrintWriter out = resp.getWriter();
 		out.print(result);
-		out.flush();	
+		out.flush();
 	}
 	//부서 정보 조회하기
 	@Override
@@ -62,31 +65,35 @@ public class DeptController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doPost");
-		// 요청 본문이 JSON 포맷일 때 입력값 요청하기
-		Map<String, Object> map = 
+		//요청 본문이 JSON포맷일 때 입력값 요청하기
+		Map<String,Object> map = 
 				mapper.readValue(req.getInputStream(), Map.class);
-		log.info(map.get("deptno")+", "+map.get("dname")+", "+map.get("loc"));
-		int result =-1;
+		log.info(map.get("deptno") + ", " 
+			   + map.get("dname") + ", " + map.get("loc"));
+		int result = -1;
 		
 		result = deptDao.deptInsert(map);
-		resp.setContentType("application/json; charset=UTF-8");
+		resp.setContentType("application/json; charset=utf-8");
 		PrintWriter out = resp.getWriter();
-		// 서블릿에서 오라클 연동하기까지 처리 - myBatis외부 라이브러리 사용 O
-		out.print(result); // 등록 성공 시: 1출력, 실패면:0 출력
+		//서블릿에서 오라클 연동하기 까지 처리함. - myBatis외부 라이브러리 사용ㅇ
+		out.print(result);//등록성공이면 : 1, 등록실패이면 :  0
+		out.flush();
 	}
-	//부서 정보 수정하기(doput)
+	//부서 정보 수정하기
 	//update dept set dname = ?, loc = ? where deptno = ?
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("doPut");
-		Map<String, Object> map =
-					mapper.readValue(req.getInputStream(), Map.class);
-		log.info(map.get("deptno") + ", " +map.get("dname") + ", " +map.get("loc"));	
+		//요청 본문이 JSON포맷일 때 입력값 요청하기
+		Map<String,Object> map = 
+				mapper.readValue(req.getInputStream(), Map.class);
+		log.info(map.get("deptno") + ", " 
+			   + map.get("dname") + ", " + map.get("loc"));	
 		int result = deptDao.deptUpdate(map);
-		resp.setContentType("applcation/json;charest=UTF-8");
+		resp.setContentType("application/json;charset=utf-8");
 		PrintWriter out = resp.getWriter();
-		out.print(result); // 출: 1 & 0 
-		out.flush()
-;	}
+		out.print(result);//1 아니면 0
+		out.flush();
+	}
 
 }
